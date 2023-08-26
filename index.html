@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bubbles App</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #container {
+      display: flex;
+      align-items: center;
+      border-style: solid;
+      border-color: rgb(0, 0, 0);
+      padding: 50px 20px;
+    }
+
+    #left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 420px;
+    }
+
+    #right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #resetButton {
+      position: absolute;
+      bottom: 90px;
+      right: 299px;
+      background-color: #000000;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-left: 2px;
+      padding: 40px;
+    }
+
+    .arrow path {
+      fill: #000000;
+    }
+
+    .animate-arrow {
+      animation: moveArrow 10s linear; 
+    }
+
+    @keyframes moveArrow {
+      0% {
+        transform: translate(0);  
+      }
+      100% {
+        
+        transform: translate(-470px, 6px);
+    }
+  }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="left">
+      <div class="circle" style="background-color: red;"></div>
+      <div class="circle" style="background-color: green;"></div>
+      <div class="circle" style="background-color: blue;"></div>
+      <div class="circle" style="background-color: orange;"></div>
+    </div>
+    <div id="right">
+      <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+      </svg>
+      <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+      </svg>
+      <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+      </svg>
+      <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+      </svg>
+    </div>
+  </div>
+  <button id="resetButton">Reset</button>
+  <script>
+    const circles = document.querySelectorAll('.circle');
+    const arrows = document.querySelectorAll('.arrow');
+
+    circles.forEach(circle => {
+      circle.dataset.originalColor = circle.style.backgroundColor;
+      circle.addEventListener('click', () => {
+        const index = Array.from(circles).indexOf(circle);
+        animateArrow(arrows[index], circle);
+        circle.style.backgroundColor = 'gray';
+      });
+    });
+
+    function animateArrow(arrow, circle) {
+      const circleBounds = circle.getBoundingClientRect();
+      const arrowBounds = arrow.getBoundingClientRect();
+
+      const offsetX = circleBounds.left - arrowBounds.left + (circleBounds.width - arrowBounds.width) / 2;
+      const offsetY = circleBounds.top - arrowBounds.top + (circleBounds.height - arrowBounds.height) / 2;
+
+      const animationDuration = 5000; // Adjust this value as needed
+      const startTimestamp = performance.now();
+
+      function step(timestamp) {
+        const progress = (timestamp - startTimestamp) / animationDuration;
+        if (progress < 1) {
+          arrow.style.transform = `translate(${offsetX * progress}px, ${offsetY * progress}px)`;
+          requestAnimationFrame(step);
+        } else {
+          arrow.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    const resetButton = document.getElementById('resetButton');
+    resetButton.addEventListener('click', () => {
+      circles.forEach(circle => {
+        circle.style.backgroundColor = circle.dataset.originalColor;
+      });
+      arrows.forEach(arrow => {
+        arrow.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
